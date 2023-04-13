@@ -23,7 +23,7 @@ public class Vorlesungsverzeichnis
         }
         catch (FileNotFoundException e)
         {
-            System.out.println("Du idiot - die Datei gibs net");
+            System.out.println("Du idiot - die Datei gibs net wirklich");
         }
         try {
             load(a.toString());
