@@ -1,3 +1,5 @@
+package Java2;
+
 import java.util.*;
 
 public class CharCollection
