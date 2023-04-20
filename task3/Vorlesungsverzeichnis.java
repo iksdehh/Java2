@@ -1,4 +1,4 @@
-package Java2.task3;
+package task3;
 
 
 import java.io.*;
@@ -7,21 +7,23 @@ import java.util.*;
 public class Vorlesungsverzeichnis implements Iterable<List<String>>
 {
     List <List<String>> lectures = new LinkedList<>();
+    Set <Vorlesung> vorlesung = new HashSet<>();
     public static void main(String[] args)
     {
-        Vorlesungsverzeichnis a = new Vorlesungsverzeichnis ("C:/Users/ReneW/IdeaProjects/Practise/src/Java2/task3/Daten.txt");
+       Vorlesungsverzeichnis a = new Vorlesungsverzeichnis ("/Users/renewioska/IdeaProjects/Java2/src/task3/Daten.txt");
 
-        a.descendingTitles();
+       // a.descendingTitles();
 
     }
 
-    public Vorlesungsverzeichnis(String s)
-    {
+    public Vorlesungsverzeichnis(String s) {
         try
         {
            lectures = load(s);
         }
-        catch (IOException e) {
+
+        catch (IOException e)
+        {
             throw new IllegalStateException();
         }
     }
@@ -32,9 +34,19 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
         BufferedReader br = new BufferedReader(new FileReader(filename));
         for(String line = br.readLine(); line!=null; line = br.readLine())
         {
+
             result.add(Arrays.asList(line.split(":")));
+            for (List<String> list : result)
+            {
+                if(list.size() != 4)
+                {
+                    throw new TextFileFormatException();
+                }
+            }
         }
         br.close();
+
+        System.out.println(result);
         return result;
     }
 
@@ -43,9 +55,14 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
         List <String> titles = new LinkedList<>();  //Neue Linkedlist (iteriert von einem zum nächsten Element) Macht das einfügen und löschen von Elementen in der Mitte besser möglich
         for (List<String> lecture : lectures)   //es wird durch lectures iteriert (mithilfe einer Listenvariable lecture)
         {
-            titles.add(lecture.get(1));         //es wird jeweils das zweite element der aktuellen Liste zu titels hinzugefügt
+            System.out.println(lecture);
+            if(!titles.contains(lecture.get(1)))
+            {
+                titles.add(lecture.get(1));         //es wird jeweils das zweite element der aktuellen Liste zu titels hinzugefügt
+            }
         }
         Collections.sort(titles);
+        System.out.println(titles);
         return titles;
     }
 
@@ -191,5 +208,16 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
     @Override
     public Iterator<List<String>> iterator() {
         return lectures.iterator();
+    }
+    private static class TextFileFormatException extends IOException
+    {
+        public TextFileFormatException()
+        {
+            super("Test");
+        }
+        public TextFileFormatException(String fehlermeldung)
+        {
+            super(fehlermeldung);
+        }
     }
 }
