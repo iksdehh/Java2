@@ -1,71 +1,79 @@
-package task3;
-
+package Java2.task3;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.TimeoutException;
 
 public class Vorlesungsverzeichnis implements Iterable<List<String>>
 {
     List <List<String>> lectures = new LinkedList<>();
     Set <Vorlesung> vorlesung = new HashSet<>();
-    public static void main(String[] args)
-    {
-       Vorlesungsverzeichnis a = new Vorlesungsverzeichnis ("/Users/renewioska/IdeaProjects/Java2/src/task3/Daten.txt");
-
-       // a.descendingTitles();
-
+    public static void main(String[] args)  {
+        Vorlesungsverzeichnis a = new Vorlesungsverzeichnis("C:\\Users\\ReneW\\IdeaProjects\\Practise\\src\\Java2\\task3\\Daten.txt");
+        a.descendingTitles();
     }
 
     public Vorlesungsverzeichnis(String s) {
-        try
+        try {
+            lectures = load(s);
+
+            for (List<String> line : lectures) {
+
+                String gruppe = line.get(0);
+                String modul = line.get(1);
+                String prof = line.get(2);
+                String anzahl = line.get(3);
+
+                List<String> vorlesungsDaten = Arrays.asList(gruppe, modul, prof, anzahl);
+                Vorlesung neueVorlesung = new Vorlesung(vorlesungsDaten);
+                vorlesung.add(neueVorlesung);
+
+            }
+        }
+        catch (IOException | ArrayIndexOutOfBoundsException e)
         {
-           lectures = load(s);
+            throw new TextFileFormatException("Liste fehlerhaft");
         }
 
-        catch (IOException e)
-        {
-            throw new IllegalStateException();
-        }
     }
+
 
     public static List<List<String>> load (String filename) throws IOException
     {
-        List<List<String>> result = new ArrayList<>();
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        for(String line = br.readLine(); line!=null; line = br.readLine())
-        {
 
-            result.add(Arrays.asList(line.split(":")));
-            for (List<String> list : result)
-            {
-                if(list.size() != 4)
-                {
-                    throw new TextFileFormatException();
-                }
+            List<List<String>> result = new ArrayList<>();
+            BufferedReader br = new BufferedReader(new FileReader(filename));
+            for (String line = br.readLine(); line != null && line.length() != 4; line = br.readLine()) {
+
+                result.add(Arrays.asList(line.split(":")));
             }
-        }
-        br.close();
+            br.close();
 
-        System.out.println(result);
-        return result;
+
+            // System.out.println(result);
+            return result;
+
+
     }
 
     public List <String> titles()
     {
         List <String> titles = new LinkedList<>();  //Neue Linkedlist (iteriert von einem zum nächsten Element) Macht das einfügen und löschen von Elementen in der Mitte besser möglich
-        for (List<String> lecture : lectures)   //es wird durch lectures iteriert (mithilfe einer Listenvariable lecture)
+
+        for (Vorlesung vorlesung1 : vorlesung)
         {
-            System.out.println(lecture);
-            if(!titles.contains(lecture.get(1)))
+            if(!titles.contains(vorlesung1.modul))
             {
-                titles.add(lecture.get(1));         //es wird jeweils das zweite element der aktuellen Liste zu titels hinzugefügt
+                titles.add(vorlesung1.modul);
             }
         }
+
         Collections.sort(titles);
         System.out.println(titles);
         return titles;
     }
 
+    /*
     public List <String> getDozent()        //Hilfsmethode für workaholics
     {
         List<String> Dozenten = new LinkedList<>();
@@ -77,10 +85,41 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
         System.out.println(Dozenten);
         return Dozenten;
     }
+
+     */
     public Set<String> workaholics()
     {
+
         Set<String> workaholics = new HashSet<>();
         Map<String, Integer> workers = new HashMap<>();
+
+        List<String> dozenten =new ArrayList<>();
+        List<String> alleDozenten = new ArrayList<>();
+        List<String> b =new ArrayList<>();
+
+
+        for (Vorlesung vorlesung1 : vorlesung)
+        {
+           alleDozenten.add(vorlesung1.prof);
+        }
+        //System.out.println(alleDozenten);
+        for (String s : alleDozenten)
+        {
+          if(!dozenten.contains(s))
+          {
+            dozenten.add(s);
+          }
+          else
+          {
+              workaholics.add(s);
+          }
+        }
+
+        System.out.println(workaholics);
+        // System.out.println(workaholics);
+        return workaholics;
+
+        /*
         for(String key : this.getDozent())              //es wird die Liste von getDozent durchlaufen
         {
             if(workers.containsKey(key))                //Fall 1, der Dozent ist bereits in der Map enthalten
@@ -103,24 +142,24 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
                 }
             }
         }
-        System.out.println(workaholics);
-        return workaholics;
+
+
+         */
+
     }
 
     public Map<String, List<String>> groupToTitles()
     {
         Map<String, List<String>> group = new HashMap<>();
-
-        for (List<String> lecture : lectures)
+        for (Vorlesung vorlesung1 : vorlesung)
         {
-            String key = lecture.get(0);
-            String value = lecture.get(1);
+            String key = vorlesung1.gruppe;
+            String value = vorlesung1.modul;
 
             if (group.containsKey(key))
             {
                 List<String> titles= group.get(key);
                 titles.add(value);
-
             }
             else
             {
@@ -129,6 +168,25 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
                 group.put(key, titles);
             }
         }
+
+       /* for (List<String> lecture : lectures)
+        {
+            String key = lecture.get(0);
+            String value = lecture.get(1);
+
+            if (group.containsKey(key))
+            {
+                List<String> titles= group.get(key);
+                titles.add(value);
+            }
+            else
+            {
+                List<String> titles = new ArrayList<>();
+                titles.add(value);
+                group.put(key, titles);
+            }
+        }
+        */
         System.out.println(group);
         return group;
     }
@@ -139,10 +197,10 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
         Map<String, List<String>> mult = new HashMap<>();
         List<String> moreThan = new ArrayList<>();
 
-        for (List<String> lecture : lectures)
+        for (Vorlesung vorlesung1 : vorlesung)
         {
-            String key = lecture.get(1);
-            String value = lecture.get(2);
+            String key = vorlesung1.modul;
+            String value = vorlesung1.prof;
 
             if (mult.containsKey(key))
             {
@@ -173,11 +231,11 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
     public List<String> descendingTitles()
     {
         List<List<String>> reverse = new ArrayList<>();
-        for (List<String> lecture : lectures)
+        for (Vorlesung vorlesung1 : vorlesung)
         {
             List <String> sub = new ArrayList<>();
-            sub.add(lecture.get(1));
-            sub.add(lecture.get(3));
+            sub.add(vorlesung1.modul);
+            sub.add(vorlesung1.anzahl);
             reverse.add(sub);
         }
         Comparator<List<String>> comp = new Comparator<List<String>>()
@@ -190,11 +248,11 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
 
                 int teilnehmer1 = Integer.parseInt(o1.get(value1));
                 int teilnehmer2 = Integer.parseInt(o2.get(value2));
-                return Integer.compare(teilnehmer1, teilnehmer2);
+                return Integer.compare(teilnehmer2, teilnehmer1);
             }
         };
 
-        Collections.sort(reverse, comp);
+        reverse.sort(comp);
         System.out.println(reverse);
         List<String> sorted = new ArrayList<>();
         for (List<String> list : reverse)
@@ -209,15 +267,4 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
     public Iterator<List<String>> iterator() {
         return lectures.iterator();
     }
-    private static class TextFileFormatException extends IOException
-    {
-        public TextFileFormatException()
-        {
-            super("Test");
-        }
-        public TextFileFormatException(String fehlermeldung)
-        {
-            super(fehlermeldung);
-        }
     }
-}

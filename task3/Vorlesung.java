@@ -1,4 +1,4 @@
-package task3;
+package Java2.task3;
 
 import java.util.List;
 
