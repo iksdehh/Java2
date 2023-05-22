@@ -1,0 +1,12 @@
+Computeranimation|CMAN-I17|BI|WPM|Wahlpflichtmodul Zertifikat Nachrichtentechnik und Zertifikat Technische Informatik|7,5|Klausur 1,5h oder mündliche Prüfung|M. Rauschenberger
+Computeranimation|B. Arp|4
+Praktikum Computeranimation|B. Arp|2
+
+Marketing für Ingenieure|MRKT-I17|BI|WPM|Wahlpflichtmodul Zertifikat Marketing und Vertrieb|5|Klausur 1,5 h oder mündliche Prüfung oder Kursarbeit|L. Jänchen
+Marketing für Ingenieure|L. Jänchen|2
+Praktikum Marketing für Ingenieure|L. Jänchen|2
+
+Computeranimation|CMAN-M17|BMT|1|Pflichtmodul|7,5|Klausur 1,5h oder mündliche Prüfung|M. Rauschenberger
+Computeranimation|B. Arp|4
+Praktikum Computeranimation|B. Arp|2
+

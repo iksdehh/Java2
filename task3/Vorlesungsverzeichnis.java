@@ -1,8 +1,8 @@
 package Java2.task3;
 
 import java.io.*;
-import java.util.*;
-import java.util.concurrent.TimeoutException;
+        import java.util.*;
+        import java.util.concurrent.TimeoutException;
 
 public class Vorlesungsverzeichnis implements Iterable<List<String>>
 {
@@ -19,20 +19,50 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
 
             for (List<String> line : lectures) {
 
+                if(line.get(0).equals("")){         //falls keine Gruppe angegeben ist, wirft das Programm eine Exception
+                    throw new TextFileFormatException("Gruppenfeld leer");
+                }
                 String gruppe = line.get(0);
                 String modul = line.get(1);
                 String prof = line.get(2);
+
+                if(!isNummeric(line.get(3))) {      //falls Anzahl keine Zahl ist, wirft das Programm eine Exception
+                    throw new TextFileFormatException("keine Zahl");
+                }
                 String anzahl = line.get(3);
 
-                List<String> vorlesungsDaten = Arrays.asList(gruppe, modul, prof, anzahl);
-                Vorlesung neueVorlesung = new Vorlesung(vorlesungsDaten);
-                vorlesung.add(neueVorlesung);
+                if (line.size() ==4) {      // falls mehr oder weniger als die gegebene Daten angegeben sind, wirft das Programm eine Exception
 
+                List<String> vorlesungsDaten = Arrays.asList(gruppe, modul, prof, anzahl);      //Liste wird erstellt aus allen Daten line.get(n)
+                Vorlesung neueVorlesung = new Vorlesung(vorlesungsDaten);       //ein Vorlesungsobjekt wird erstellt und die Liste wird übergeben
+                vorlesung.add(neueVorlesung);                   //neues Vorlesungsobjekt wird im Set gespeichert
+                }
+                else {
+                    throw new TextFileFormatException("Fehler");
+                }
             }
         }
-        catch (IOException | ArrayIndexOutOfBoundsException e)
+            catch (IOException | ArrayIndexOutOfBoundsException e)
+            {
+                throw new TextFileFormatException("Liste fehlerhaft");
+            }
+        }
+
+
+    public boolean isNummeric(String s) //Hilfsmethode zum Konstruktor - prüft ob Anzahl eine Zahl ist
+    {
+        int value;
+        if(s == null || s.equals("")){
+            return false;
+        }
+        try
         {
-            throw new TextFileFormatException("Liste fehlerhaft");
+            value = Integer.parseInt(s);
+            return true;
+        }
+        catch(NumberFormatException e)
+        {
+        return false;
         }
 
     }
@@ -40,26 +70,18 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
 
     public static List<List<String>> load (String filename) throws IOException
     {
-
-            List<List<String>> result = new ArrayList<>();
-            BufferedReader br = new BufferedReader(new FileReader(filename));
-            for (String line = br.readLine(); line != null && line.length() != 4; line = br.readLine()) {
-
-                result.add(Arrays.asList(line.split(":")));
-            }
-            br.close();
-
-
-            // System.out.println(result);
-            return result;
-
-
+        List<List<String>> result = new ArrayList<>();          //eine Liste wird erstellt
+        BufferedReader br = new BufferedReader(new FileReader(filename));       //die Datei wird ausgelesen
+        for (String line = br.readLine(); line != null; line = br.readLine()) { //durchläuft die Datei Zeile für Zeile
+            result.add(Arrays.asList(line.split(":")));         //speichert alle Zeilen in "result" und trennt diese am  ":" mit einem Komma
+        }
+        br.close(); // das auslesen der Datei wird hier gestoppt
+        return result;
     }
 
     public List <String> titles()
     {
         List <String> titles = new LinkedList<>();  //Neue Linkedlist (iteriert von einem zum nächsten Element) Macht das einfügen und löschen von Elementen in der Mitte besser möglich
-
         for (Vorlesung vorlesung1 : vorlesung)
         {
             if(!titles.contains(vorlesung1.modul))
@@ -67,85 +89,31 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
                 titles.add(vorlesung1.modul);
             }
         }
-
         Collections.sort(titles);
-        System.out.println(titles);
         return titles;
     }
-
-    /*
-    public List <String> getDozent()        //Hilfsmethode für workaholics
-    {
-        List<String> Dozenten = new LinkedList<>();
-        for (List<String> lecture : lectures)
-        {
-            Dozenten.add(lecture.get(2));       //es wird der jeweilige Dozent der neuen Liste hinzugefügt!
-        }
-        Collections.sort(Dozenten);             //neue Liste wird sortiert
-        System.out.println(Dozenten);
-        return Dozenten;
-    }
-
-     */
     public Set<String> workaholics()
     {
-
         Set<String> workaholics = new HashSet<>();
-        Map<String, Integer> workers = new HashMap<>();
-
         List<String> dozenten =new ArrayList<>();
         List<String> alleDozenten = new ArrayList<>();
-        List<String> b =new ArrayList<>();
-
 
         for (Vorlesung vorlesung1 : vorlesung)
         {
-           alleDozenten.add(vorlesung1.prof);
+            alleDozenten.add(vorlesung1.prof);  //alle Dozenten werden hier gespeichert
         }
-        //System.out.println(alleDozenten);
-        for (String s : alleDozenten)
+        for (String s : alleDozenten)       //alle Dozenten werden durchlaufen
         {
-          if(!dozenten.contains(s))
-          {
-            dozenten.add(s);
-          }
-          else
-          {
-              workaholics.add(s);
-          }
+            if(!dozenten.contains(s)) //jedes Element wird genau einmal hinzugefügt
+            {
+                dozenten.add(s);
+            }
+            else                    //Elemente, die >2 enthalten sind werden in workaholics gespeichert
+            {
+                workaholics.add(s);
+            }
         }
-
-        System.out.println(workaholics);
-        // System.out.println(workaholics);
         return workaholics;
-
-        /*
-        for(String key : this.getDozent())              //es wird die Liste von getDozent durchlaufen
-        {
-            if(workers.containsKey(key))                //Fall 1, der Dozent ist bereits in der Map enthalten
-            {
-                workers.put(key, workers.get(key) + 1);     // dann wird der Value um 1 erhöht
-            }
-            else                                                //Element ist noch nicht vorhanden
-            {
-                workers.put(key, 1);                                //der Dozent in key wird mit dem Wert 1 gespeichert
-            }
-        }
-        //mit Map.Entry ist es möglich den Schlüssel & den Wert abzurufen und zu speichern -> im map entrySet, welches eine Funtkion der Hasmap-Klasse ist und eine Setansicht zurückgibt
-        for (Map.Entry <String, Integer> item: workers.entrySet())
-        {
-            if(item.getValue() >= 2)                                         //wenn die Häufigkeit des Zeichens höher als m ist
-            {
-                for(int i = 0; i <=item.getValue()-1; i++)                  //durchlaufen wir solange, wie die Häufigkeit ist
-                {
-                    workaholics.add(item.getKey());                            // und speichern den Dozenten i mal in die Liste workaholics
-                }
-            }
-        }
-
-
-         */
-
     }
 
     public Map<String, List<String>> groupToTitles()
@@ -155,39 +123,18 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
         {
             String key = vorlesung1.gruppe;
             String value = vorlesung1.modul;
-
-            if (group.containsKey(key))
+            if (group.containsKey(key))             //wenn die Map den Schlüssel bereits enthält, wird der Titel angehangen
             {
                 List<String> titles= group.get(key);
                 titles.add(value);
             }
-            else
+            else                                //wenn die Map den Schlüssel nicht enthält, wird das Schlüssel-Werte-Paar an die Map angehangen
             {
                 List<String> titles = new ArrayList<>();
                 titles.add(value);
                 group.put(key, titles);
             }
         }
-
-       /* for (List<String> lecture : lectures)
-        {
-            String key = lecture.get(0);
-            String value = lecture.get(1);
-
-            if (group.containsKey(key))
-            {
-                List<String> titles= group.get(key);
-                titles.add(value);
-            }
-            else
-            {
-                List<String> titles = new ArrayList<>();
-                titles.add(value);
-                group.put(key, titles);
-            }
-        }
-        */
-        System.out.println(group);
         return group;
     }
 
@@ -202,32 +149,30 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
             String key = vorlesung1.modul;
             String value = vorlesung1.prof;
 
-            if (mult.containsKey(key))
+            if (mult.containsKey(key))       //wenn die Map den Schlüssel bereits enthält, wird der Titel angehangen
             {
                 List<String> titles= mult.get(key);
                 titles.add(value);
-
             }
-            else
+            else                            //wenn die Map den Schlüssel nicht enthält, wird das Schlüssel-Werte-Paar an die Map angehangen
             {
                 List<String> titles = new ArrayList<>();
                 titles.add(value);
                 mult.put(key, titles);
             }
         }
+
+        //mit Map.Entry ist es möglich den Schlüssel & den Wert abzurufen und zu speichern
+        //im mult entrySet, welches eine Funktion der Hashmap-Klasse ist und eine Setansicht zurückgibt.
         for(Map.Entry<String, List<String>> item: mult.entrySet())
         {
-            System.out.println("Item: "+ item);
-            if(item.getValue().size() > 1)
+            if(item.getValue().size() > 1)          //wenn der Wert >1 ist, wird der Value und der Schlüssel in der neuen Map gespeichert
             {
                 multTitles.put(item.getKey(), item.getValue());
             }
         }
-        System.out.println(multTitles);
         return multTitles;
     }
-
-
     public List<String> descendingTitles()
     {
         List<List<String>> reverse = new ArrayList<>();
@@ -243,28 +188,30 @@ public class Vorlesungsverzeichnis implements Iterable<List<String>>
             @Override
             public int compare(List<String> o1, List<String> o2)
             {
-                int value1 = o1.size()- 1;
-                int value2 = o2.size()- 1;
 
-                int teilnehmer1 = Integer.parseInt(o1.get(value1));
-                int teilnehmer2 = Integer.parseInt(o2.get(value2));
-                return Integer.compare(teilnehmer2, teilnehmer1);
+                int position1 = Integer.parseInt(o1.get(1));
+                System.out.println("Wert 1: " + position1);
+                int position2 = Integer.parseInt(o2.get(1));
+                System.out.println("Wert 2: "+ position2);
+                System.out.println("vergleich : " + Integer.compare(position2, position1));
+                return Integer.compare(position2, position1);
+
+
             }
         };
-
         reverse.sort(comp);
-        System.out.println(reverse);
         List<String> sorted = new ArrayList<>();
         for (List<String> list : reverse)
         {
             sorted.add(list.get(0));
         }
-
+        System.out.println(reverse);
         return sorted;
     }
-
     @Override
-    public Iterator<List<String>> iterator() {
+    public Iterator<List<String>> iterator()
+    {
         return lectures.iterator();
     }
-    }
+
+}

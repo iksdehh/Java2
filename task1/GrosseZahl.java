@@ -1,6 +1,5 @@
-package Java2;
+package Java2.task1;
 
-import java.util.Arrays;
 public class GrosseZahl
 {
     public int[] arr;

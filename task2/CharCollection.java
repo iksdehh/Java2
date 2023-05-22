@@ -1,4 +1,4 @@
-package Java2;
+package Java2.task2;
 
 import java.util.*;
 
@@ -155,7 +155,8 @@ public class CharCollection
             }
 
         }
-        //mit Map.Entry ist es möglich den Schlüssel & den Wert abzurufen und zu speichern -> im map entrySet, welches eine Funtkion der Hasmap-Klasse ist und eine Setansicht zurückgibt.
+        //mit Map.Entry ist es möglich den Schlüssel & den Wert abzurufen und zu speichern -> im map entrySet
+        // welches eine Funtkion der Hasmap-Klasse ist und eine Setansicht zurückgibt.
         for (Map.Entry <String, Integer> item: map.entrySet())
         {
             if(item.getValue() > m)                                         //wenn die Häufigkeit des Zeichens höher als m ist

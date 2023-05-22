@@ -1,7 +1,8 @@
-package Java2;
+package Java2.task1;
 
 import static org.junit.Assert.*;
 
+import Java2.task1.GrosseZahl;
 import org.junit.Before;
 import org.junit.Test;
 

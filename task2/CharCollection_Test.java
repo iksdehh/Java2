@@ -1,6 +1,8 @@
-package Java2;
+package Java2.task2;
 
 import static org.junit.Assert.*;
+
+import Java2.task2.CharCollection;
 import org.junit.*;
 import java.util.Arrays;
 
