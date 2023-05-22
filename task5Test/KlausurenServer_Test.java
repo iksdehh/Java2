@@ -96,7 +96,7 @@ public class KlausurenServer_Test {
 		line = einSo.readLine();
 		System.out.println(line);
 // 		assertTrue(line.equals("1 [2],[22,23,24]"));
-		assertTrue(line.equals("1 [2],[22,23,24]")||line.equals("1 [22,23,24],[2]"));
+ 		assertTrue(line.equals("1 [2],[22,23,24]")||line.equals("1 [22,23,24],[2]"));
 		closesocket();
 		System.out.println("TEST: OK"+"\n");
 

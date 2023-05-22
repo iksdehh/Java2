@@ -12,9 +12,12 @@ public class KlausurenServerThread extends Thread {
     private Socket clientSo;
     private int clientNr;
 
-    public KlausurenServerThread(Socket clientSo, int clientNr) {
+    public KlausurenServerThread(Socket clientSo, int clientNr, File anfragen) {
         this.clientSo = clientSo;
         this.clientNr = clientNr;
+        if(anfragen.exists() && anfragen.length()!=0) {
+            anmeldungen = loadState();
+        }
     }
 
     public void run() {
@@ -28,7 +31,9 @@ public class KlausurenServerThread extends Thread {
                 String answer = anfragenVerabeiten(zeile);
                 ausSo.println(answer);
             }
-            this.saveState("C:\\Users\\ReneW\\IdeaProjects\\Practise\\src\\Java2\\task5Test\\Anfragen.txt");
+            einSo.close();
+            ausSo.close();
+            this.saveState();
             clientSo.close();
 
         } catch (IOException e){
@@ -75,7 +80,7 @@ public class KlausurenServerThread extends Thread {
     }
 
     private String getAll() {
-        anmeldungen = loadState();
+
         List <List<Integer>> exams = new ArrayList<>();
 
         if (!anmeldungen.isEmpty()){
@@ -126,7 +131,7 @@ public class KlausurenServerThread extends Thread {
     }
 
     private String get(String key) {
-        anmeldungen = loadState();
+
         if (anmeldungen.containsKey(key)) {
             List<Integer> list = new ArrayList<>();
             for (Integer value : anmeldungen.get(key)) {
@@ -157,8 +162,8 @@ public class KlausurenServerThread extends Thread {
         return "1" + oldValue;
     }
 
-    private void saveState(String pfad){
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(pfad, true))){
+    private void saveState(){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\ReneW\\IdeaProjects\\Practise\\src\\Java2\\task5Test\\Anfragen.txt", true))){
             for (Map.Entry<String, List<Integer>> entry : anmeldungen.entrySet()) {
                 String line = entry.getKey() + ": " + entry.getValue();
                 writer.write(line);
@@ -175,7 +180,7 @@ public class KlausurenServerThread extends Thread {
    private Map<String, List<Integer>> loadState() {
 
 
-       try (BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\ReneW\\IdeaProjects\\Practise\\src\\Java2\\task5Test\\Anfragen.txt"))){
+       try (BufferedReader reader = new BufferedReader(new FileReader("C:/Users/ReneW/IdeaProjects/Practise/src/Java2/task5Test/Anfragen.txt"))){
            String line;
            while ((line = reader.readLine()) != null) {
                System.out.println("load Line: " + line);

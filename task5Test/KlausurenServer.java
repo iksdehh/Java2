@@ -18,7 +18,7 @@ public class KlausurenServer {
             e.printStackTrace();
         }
 
-        File  Anfragen = new File("C:\\Users\\ReneW\\IdeaProjects\\Practise\\src\\Java2\\task5Test\\file.txt");
+        File  Anfragen = new File("C:\\Users\\ReneW\\IdeaProjects\\Practise\\src\\Java2\\task5Test\\Anfragen.txt");
         System.out.println("Server lauscht auf Port " + port);
         int clientNr = 0;
         while (true) {
@@ -26,7 +26,7 @@ public class KlausurenServer {
                 Socket clientSo = serverSo.accept();
                 clientNr++;
                 System.out.println("Mit Client " + clientNr + " verbunden");
-                KlausurenServerThread klausurenServerThread = new KlausurenServerThread(clientSo, clientNr);
+                KlausurenServerThread klausurenServerThread = new KlausurenServerThread(clientSo, clientNr, Anfragen);
                 klausurenServerThread.start();
 
 
