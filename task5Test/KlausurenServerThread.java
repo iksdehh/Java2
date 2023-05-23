@@ -180,7 +180,7 @@ public class KlausurenServerThread extends Thread {
     }
 
     private void saveState(){
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("/.../.../IdeaProjects/Java2/task5Test/Anfragen.txt", true))){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("/.../.../.../.../.../Anfragen.txt", true))){
             for (Map.Entry<String, List<Integer>> entry : KlausurenServer.anmeldungen.entrySet()) {
                 String line = entry.getKey() + ": " + entry.getValue();
                 writer.write(line);
@@ -197,7 +197,7 @@ public class KlausurenServerThread extends Thread {
    private Map<String, List<Integer>> loadState() {
 
 
-       try (BufferedReader reader = new BufferedReader(new FileReader("/.../.../IdeaProjects/Java2/task5Test/Anfragen.txt"))){
+       try (BufferedReader reader = new BufferedReader(new FileReader("/.../.../.../.../.../Anfragen.txt"))){
            String line;
            while ((line = reader.readLine()) != null) {
                System.out.println("load Line: " + line);

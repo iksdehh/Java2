@@ -21,7 +21,7 @@ public class KlausurenServer {
             e.printStackTrace();
         }
 
-        File  Anfragen = new File("/.../.../IdeaProjects/Java2/task5Test/Anfragen.txt");
+        File  Anfragen = new File("/.../.../.../.../.../Anfragen.txt");
         System.out.println("Server connected. port: " + port);
         int clientNr = 0;
         while (true) {
@@ -36,7 +36,7 @@ public class KlausurenServer {
             } catch (IOException e ) {
                 e.printStackTrace();
             } finally {
-                try(BufferedWriter writer = new BufferedWriter(new PrintWriter("/.../.../IdeaProjects/Java2/task5Test/Anfragen.txt"))) {
+                try(BufferedWriter writer = new BufferedWriter(new PrintWriter("/.../.../.../.../.../Anfragen.txt"))) {
                     writer.write("");
                     Anfragen.delete();
 
