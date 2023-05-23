@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.util.*;
 
 public class KlausurenServerThread extends Thread {
-    public Map<String, List<Integer>> anmeldungen = new HashMap<>();
+
 
 
     private Socket clientSo;
@@ -16,7 +16,7 @@ public class KlausurenServerThread extends Thread {
         this.clientSo = clientSo;
         this.clientNr = clientNr;
         if(anfragen.exists() && anfragen.length()!=0) {
-            anmeldungen = loadState();
+            KlausurenServer.anmeldungen = loadState();
         }
     }
 
@@ -47,6 +47,16 @@ public class KlausurenServerThread extends Thread {
     private String anfragenVerabeiten(String inputString) {
         String answer = "";
         String request = inputString.split(" ")[0].toLowerCase(); //inputString wird am ersten Leerzeichen gesplittet und der vordere Teil in request in Kleinbuchstaben gespeichert
+        if(request.equals("stop")) {
+            try {
+                System.out.println("1");
+                clientSo.close();
+                return "1";
+            } catch (IOException e){
+                e.printStackTrace();
+                return "0";
+            }
+        }
         String[] args = inputString.split(" "); //args enthält alle weiteren Informationen
 
         String s = "";
@@ -71,7 +81,8 @@ public class KlausurenServerThread extends Thread {
     private String stopServer()  {
 
         try {
-            clientSo.close();
+            System.out.println("Test");
+            this.clientSo.close();
             return "1";
         } catch (IOException e){
             e.printStackTrace();
@@ -83,8 +94,8 @@ public class KlausurenServerThread extends Thread {
 
         List <List<Integer>> exams = new ArrayList<>();
 
-        if (!anmeldungen.isEmpty()){
-            for (Map.Entry<String, List<Integer>> entry : anmeldungen.entrySet()) {
+        if (!KlausurenServer.anmeldungen.isEmpty()){
+            for (Map.Entry<String, List<Integer>> entry : KlausurenServer.anmeldungen.entrySet()) {
                 exams.add(entry.getValue());
             }
             List<List<Integer>> filteredList = new ArrayList<>();
@@ -106,9 +117,9 @@ public class KlausurenServerThread extends Thread {
             for (List<Integer> integers : filteredList) {
                 s += ","+ integers ;
             }
-            s = s.replaceFirst(",", "");
+            s = s.replaceFirst(",", "").replaceAll(" ", "");
 
-            return "1 " + s.trim();
+            return "1 " + s;
         }else{
             return "0";
         }
@@ -118,11 +129,16 @@ public class KlausurenServerThread extends Thread {
     private String del(String key) {
         List<List<Integer>> deleted = new ArrayList<>();
 
-        if (anmeldungen.containsKey(key) && (!anmeldungen.get(key).equals(""))){
-            deleted.add(anmeldungen.get(key));
-            anmeldungen.remove(key);
-            System.out.println("1" + deleted);
-            return "1" + deleted;
+        if (KlausurenServer.anmeldungen.containsKey(key) && (!KlausurenServer.anmeldungen.get(key).equals(""))){
+            deleted.add(KlausurenServer.anmeldungen.get(key));
+            KlausurenServer.anmeldungen.remove(key);
+
+            String str ="";
+            for (List<Integer> integers : deleted) {
+                str += integers;
+            }
+            str = str.replaceAll("\\[", "").replaceAll(" ", "").replaceAll("]", "");
+            return "1 " + str;
 
         } else {
             return "0";
@@ -132,13 +148,23 @@ public class KlausurenServerThread extends Thread {
 
     private String get(String key) {
 
-        if (anmeldungen.containsKey(key)) {
+        if (KlausurenServer.anmeldungen.containsKey(key)) {
             List<Integer> list = new ArrayList<>();
-            for (Integer value : anmeldungen.get(key)) {
+            for (Integer value : KlausurenServer.anmeldungen.get(key)) {
                 list.add(value);
             }
             Collections.sort(list);
-            return "1 " + list;
+
+            String str = "";
+            for (Integer integer : list) {
+                str += "," + integer;
+            }
+
+
+            str = str.replaceFirst(",","").replaceAll("\\[", "")
+                    .replaceAll(" ", "").replaceAll("]", "");
+
+            return "1 " + str;
         } else {
             return "0";
         }
@@ -146,8 +172,8 @@ public class KlausurenServerThread extends Thread {
 
     private String put(String key, String newValue) {
         String oldValue ="";
-        if(anmeldungen.containsKey(key)){
-            oldValue = anmeldungen.get(key).toString();
+        if(KlausurenServer.anmeldungen.containsKey(key)){
+            oldValue = KlausurenServer.anmeldungen.get(key).toString();
         }
 
         List<Integer> list = new ArrayList<>();
@@ -156,15 +182,16 @@ public class KlausurenServerThread extends Thread {
             list.add(Integer.parseInt(s.trim()));
         }
 
+        KlausurenServer.anmeldungen.put(key, list);
 
-        anmeldungen.put(key, list);
-        System.out.println("1" + oldValue);
-        return "1" + oldValue;
+        oldValue = oldValue.replaceAll("\\[", "").replaceAll(" ", "").replaceAll("]", "");
+
+        return "1 " + oldValue;
     }
 
     private void saveState(){
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("C:\\Users\\ReneW\\IdeaProjects\\Practise\\src\\Java2\\task5Test\\Anfragen.txt", true))){
-            for (Map.Entry<String, List<Integer>> entry : anmeldungen.entrySet()) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/renewioska/IdeaProjects/Java2/task5Test/Anfragen.txt", true))){
+            for (Map.Entry<String, List<Integer>> entry : KlausurenServer.anmeldungen.entrySet()) {
                 String line = entry.getKey() + ": " + entry.getValue();
                 writer.write(line);
                 writer.newLine(); //Zeilenumbruch für die nächste Zeile
@@ -180,7 +207,7 @@ public class KlausurenServerThread extends Thread {
    private Map<String, List<Integer>> loadState() {
 
 
-       try (BufferedReader reader = new BufferedReader(new FileReader("C:/Users/ReneW/IdeaProjects/Practise/src/Java2/task5Test/Anfragen.txt"))){
+       try (BufferedReader reader = new BufferedReader(new FileReader("/Users/renewioska/IdeaProjects/Java2/task5Test/Anfragen.txt"))){
            String line;
            while ((line = reader.readLine()) != null) {
                System.out.println("load Line: " + line);
@@ -193,14 +220,14 @@ public class KlausurenServerThread extends Thread {
                for (String s : x) {
                    list.add(Integer.parseInt(s.trim()));
                }
-               anmeldungen.put(key, list);
+               KlausurenServer.anmeldungen.put(key, list);
            }
            System.out.println("Daten erfolgreich eingelesen");
        } catch (IOException e) {
            System.out.println("Fehler beim Lesen der Datei: " + e.getMessage());
        }
 
-        return anmeldungen;
+        return KlausurenServer.anmeldungen;
    }
 }
 

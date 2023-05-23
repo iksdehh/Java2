@@ -1,5 +1,7 @@
 package Java2;
 
+import Java2.task5Test.KlausurenServer;
+
 import java.io.*;
 import java.util.*;
 
@@ -7,35 +9,13 @@ public class Try {
     private  Map<String, List<Integer>> anmeldungen = new HashMap<>();
     private static Map<String, List<Integer>> anmeldungen22 = new HashMap<>();
     public static void main(String[] args) {
-      /*  Try test = new Try();
+        Try test = new Try();
         test.anfragenVerabeitung("put mail1 22,24");
         test.anfragenVerabeitung("put mail2 22,23,24");
         test.anfragenVerabeitung("put mail3 2");
 
-        for (Map.Entry<String, List<Integer>> stringListEntry : test.anmeldungen.entrySet()) {
-            System.out.println(stringListEntry);
-        }
+        System.out.println(test.get("mail2"));
 
-        test.saveState("C:\\Users\\ReneW\\IdeaProjects\\Practise\\src\\Java2\\task5Test\\Anfragen.txt");
-
-        loadState();
-        for (Map.Entry<String, List<Integer>> stringListEntry : anmeldungen22.entrySet()) {
-            System.out.println("geloadet brother: "+stringListEntry);
-        }
-
-       */
-
-        List<String> stringList = new ArrayList<>();
-        stringList.add("42");
-        stringList.add("455");
-        stringList.add("363");
-
-
-
-        System.out.println(stringList);
-        for (String s : stringList) {
-            System.out.println(s);
-        }
     }
 
 
@@ -108,35 +88,50 @@ public class Try {
 
     }
 
-    private void del(String key) {
+    private String del(String key) {
         List<List<Integer>> deleted = new ArrayList<>();
 
-        if (anmeldungen.containsKey(key) && (!anmeldungen.get(key).equals(""))){
+        if (anmeldungen.containsKey(key) && (!anmeldungen.get(key).equals(""))) {
             deleted.add(anmeldungen.get(key));
             anmeldungen.remove(key);
-            System.out.println("1");
-            System.out.println(deleted);
+
+            String str ="";
+            for (List<Integer> integers : deleted) {
+                str += integers;
+            }
+            str = str.replaceAll("\\[", "").replaceAll(" ", "").replaceAll("]", "");
+            return "1 " + str;
+
         } else {
-            System.out.println("0");
+            return "0";
         }
     }
 
-    private void get(String key) {
+    private String get(String key) {
+
         if (anmeldungen.containsKey(key)) {
             List<Integer> list = new ArrayList<>();
             for (Integer value : anmeldungen.get(key)) {
                 list.add(value);
             }
             Collections.sort(list);
-            System.out.println(list);
 
+            String str = "";
+            for (Integer integer : list) {
+                str += "," + integer;
+            }
+
+
+            str = str.replaceFirst(",","").replaceAll("\\[", "")
+                    .replaceAll(" ", "").replaceAll("]", "");
+
+            return "1 " + str;
         } else {
-            System.out.println("get Methode");
-            System.out.println("0");
+            return "0";
         }
     }
 
-    private  void put(String key, String newValue) {
+    private String put(String key, String newValue) {
         String oldValue ="";
         if(anmeldungen.containsKey(key)){
             oldValue = anmeldungen.get(key).toString();
@@ -144,20 +139,23 @@ public class Try {
 
         List<Integer> list = new ArrayList<>();
         String[] klausuren = newValue.split(",");
-        if(klausuren.length >= 1) {
-            for (String s : klausuren) {
-                list.add(Integer.parseInt(s.trim()));
-            }
+        for (String s : klausuren) {
+            list.add(Integer.parseInt(s.trim()));
         }
 
+
         anmeldungen.put(key, list);
-        System.out.println("1" );
-        System.out.println(oldValue);
+
+        oldValue = oldValue.replaceAll("\\[", "").replaceAll(" ", "").replaceAll("]", "");
+
+        return "1 " + oldValue;
     }
 
-    private void getAll() {
-        List <List<Integer>> exams = new ArrayList<>();
-        if (!anmeldungen.isEmpty()){
+    private String getAll() {
+
+        List<List<Integer>> exams = new ArrayList<>();
+
+        if (!anmeldungen.isEmpty()) {
             for (Map.Entry<String, List<Integer>> entry : anmeldungen.entrySet()) {
                 exams.add(entry.getValue());
             }
@@ -178,14 +176,15 @@ public class Try {
             }
             String s = "";
             for (List<Integer> integers : filteredList) {
-                s += integers;
+                s += "," + integers;
             }
-            // 1 [[2],[22,23,24]]
-            System.out.println("1 " + s);
-        }else{
-            System.out.println("0");
-        }
+            s = s.replaceFirst(",", "").replaceAll(" ", "");
 
+
+            return "1 " + s;
+        } else {
+            return "0";
+        }
     }
 
 

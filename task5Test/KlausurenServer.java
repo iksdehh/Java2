@@ -3,10 +3,13 @@ package Java2.task5Test;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class KlausurenServer {
-
+    public static Map<String, List<Integer>> anmeldungen = new HashMap<>();
     public static void main(String[] args) {
         ServerSocket serverSo = null;
         //int port = Integer.valueOf(args[0]).intValue();
@@ -18,7 +21,7 @@ public class KlausurenServer {
             e.printStackTrace();
         }
 
-        File  Anfragen = new File("C:\\Users\\ReneW\\IdeaProjects\\Practise\\src\\Java2\\task5Test\\Anfragen.txt");
+        File  Anfragen = new File("/Users/renewioska/IdeaProjects/Java2/task5Test/Anfragen.txt");
         System.out.println("Server lauscht auf Port " + port);
         int clientNr = 0;
         while (true) {
@@ -33,7 +36,7 @@ public class KlausurenServer {
             } catch (IOException e ) {
                 e.printStackTrace();
             } finally {
-                try(BufferedWriter writer = new BufferedWriter(new PrintWriter("C:/Users/ReneW/IdeaProjects/Practise/src/Java2/task5Test/Anfragen.txt"))) {
+                try(BufferedWriter writer = new BufferedWriter(new PrintWriter("/Users/renewioska/IdeaProjects/Java2/task5Test/Anfragen.txt"))) {
                     writer.write("");
                     Anfragen.delete();
 
