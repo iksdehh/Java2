@@ -9,9 +9,9 @@ import java.net.Socket;
 public class Client {
     public static void main(String[] args) {
         Socket socket = null;
-        //String host = args[0];
+
         String host = "localhost";
-        // int port = Integer.valueOf(args[1]).intValue();
+
         int port = 2000;
         try {
             socket = new Socket(host, port);

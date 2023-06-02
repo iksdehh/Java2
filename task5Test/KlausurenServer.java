@@ -12,7 +12,7 @@ public class KlausurenServer {
     public static Map<String, List<Integer>> anmeldungen = new HashMap<>();
     public static void main(String[] args) {
         ServerSocket serverSo = null;
-        //int port = Integer.valueOf(args[0]).intValue();
+
         int port = 2000;
         try {
             serverSo = new ServerSocket(port);

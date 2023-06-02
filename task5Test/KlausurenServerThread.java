@@ -26,21 +26,20 @@ public class KlausurenServerThread extends Thread {
             PrintWriter ausSo = new PrintWriter(clientSo.getOutputStream(), true);
             String zeile;
             while ((zeile = einSo.readLine()) != null) {
-                //ausSo.println("Client "+clientNr+": "+zeile);
-                //ausSo.println("0");
+
                 String answer = anfragenVerabeiten(zeile);
                 ausSo.println(answer);
             }
             einSo.close();
             ausSo.close();
-            this.saveState();
+            saveState();
             clientSo.close();
 
         } catch (IOException e){
             e.printStackTrace();
         }
         finally {
-            System.out.println("Client "+clientNr+" beendet");
+            System.out.println("Client "+ clientNr +" beendet");
         }
     }
 
@@ -91,14 +90,14 @@ public class KlausurenServerThread extends Thread {
             List<List<Integer>> filteredList = new ArrayList<>();
             for (List<Integer> currentList : exams) {
                 boolean isSubList = false;
-
+            //überprüft, ob die aktuelle Liste eine Teilmenge einer anderen Liste ist
                 for (List<Integer> otherList : exams) {
                     if (!currentList.equals(otherList) && otherList.containsAll(currentList)) {
                         isSubList = true;
                         break;
                     }
                 }
-
+                //wenn sie keine Teilmenge ist, wird sie zur gefilterten liste hinzugefügt
                 if (!isSubList) {
                     filteredList.add(currentList);
                 }
@@ -180,13 +179,12 @@ public class KlausurenServerThread extends Thread {
     }
 
     private void saveState(){
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("/.../.../.../.../.../Anfragen.txt", true))){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("./task5Test/Anfragen.txt", true))){
             for (Map.Entry<String, List<Integer>> entry : KlausurenServer.anmeldungen.entrySet()) {
                 String line = entry.getKey() + ": " + entry.getValue();
                 writer.write(line);
                 writer.newLine(); //Zeilenumbruch für die nächste Zeile
                 writer.flush();
-
             }
 
         } catch (IOException e ){
@@ -197,7 +195,7 @@ public class KlausurenServerThread extends Thread {
    private Map<String, List<Integer>> loadState() {
 
 
-       try (BufferedReader reader = new BufferedReader(new FileReader("/.../.../.../.../.../Anfragen.txt"))){
+       try (BufferedReader reader = new BufferedReader(new FileReader("./task5Test/Anfragen.txt"))){
            String line;
            while ((line = reader.readLine()) != null) {
                System.out.println("load Line: " + line);
