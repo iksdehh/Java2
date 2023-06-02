@@ -2,13 +2,15 @@ package Java2.task6;
 
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.JPanel;
 import java.awt.geom.Ellipse2D;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.awt.Point;
+import java.util.List;
 
 public class GrapicMaze extends JFrame {
+
+    List<Point> getSolution = new ArrayList<>();
         private char[][] maze;
         JFrame fenster = new JFrame("GrapicMaze");
       public static JPanel panel = new JPanel(new GridLayout(6, 6, 1, 1));
@@ -41,7 +43,7 @@ public class GrapicMaze extends JFrame {
 
         mymaze.printMaze();
 
-
+        mymaze.getSolution.forEach(System.out::println);
     }
 
 
@@ -71,15 +73,17 @@ public class GrapicMaze extends JFrame {
         }
 
         public void printMaze() {
-                for (int i = 0; i < maze.length; i++) {
-                    for (int j = 0; j < maze.length; j++) {
+                for (int i = 0; i < maze.length; i++) { // Y-Achse
+                    for (int j = 0; j < maze.length; j++) { // X-Achse
                         JPanel jpanel = new JPanel();
                         char symbol = maze[i][j];
 
                         if (symbol == '+') {
                             jpanel.setLayout(new BorderLayout());
                             jpanel.add(new KreisPanel(), BorderLayout.CENTER);
-                            System.out.println("Kreis");
+                            System.out.println("Kreis: " + "("+j+","+i+")");
+                            Point point = new Point(j+1, (i+1)*(-1)); //Erstellt einen neuen Punkt mit den Koordinaten des jeweiligen Punktes.
+                            getSolution.add(point);
                         }
                         if (symbol == ' ') {
                             jpanel.setBackground(Color.WHITE);
