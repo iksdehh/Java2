@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.awt.Point;
 import java.util.List;
 
-public class GrapicMaze extends JFrame {
+public class GraphicMaze extends JFrame {
 
     List<Point> getSolution = new ArrayList<>();
         private char[][] maze;
         JFrame fenster = new JFrame("GrapicMaze");
       public static JPanel panel = new JPanel(new GridLayout(6, 6, 1, 1));
 
-        public GrapicMaze(String title, char[][] maze) {
+        public GraphicMaze(String title, char[][] maze) {
             fenster.setSize(500, 500);
             fenster.setLocationRelativeTo(null); // Um das Fenster in der Mitte des Bildschirms zu öffnen
             fenster.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // beendet das Programm beim Schließen des Fensters
@@ -37,7 +37,7 @@ public class GrapicMaze extends JFrame {
                         {' ',' ',' ','X',' ','X'},
                         {'X','X',' ',' ',' ',' '}};
 
-        GrapicMaze mymaze = new GrapicMaze("hallo", maze);
+        GraphicMaze mymaze = new GraphicMaze("hallo", maze);
 
         mymaze.canExit(0,0);
 
