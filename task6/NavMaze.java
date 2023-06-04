@@ -21,31 +21,31 @@ public class NavMaze extends JFrame  {
 
     public NavMaze(char[][] maze) {
         this.maze = maze;
-        setFenster();
+        setFenster(); //Fenstereinstellung werden festgelegt
 
-        panel.setBackground(Color.BLACK);
+        panel.setBackground(Color.BLACK); //Panelhintergrundfarbe schwarz setzen, sodass für die Kästchen ein schwarzer Rand sichtbar wird.
 
 
         JPanel overlayPanel = new JPanel();
-        overlayPanel.setLayout(new OverlayLayout(overlayPanel));
-        panel2.setOpaque(false);
-        overlayPanel.add(panel);
-        overlayPanel.add(panel2);
+        overlayPanel.setLayout(new OverlayLayout(overlayPanel)); //erlaubt es mehrere "Schichten" zu erstellen
+        panel2.setOpaque(false); //Hintergrundfarbe der obersten Schicht wird auf durchsichtig gesetzt.
+        overlayPanel.add(panel); //untere Schicht wird hinzugefügt
+        overlayPanel.add(panel2); //obere Schicht wird hinzugefügt
 
 
         JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,10,10));    //JPanel für BorderLayout für den southBereich - FlowChart wird hinzugefügt
 
-        setVor_Button();
-        setZurueck_Button();
+        setVor_Button(); //Aufruf für die Einstellungen des Vor-Buttons
+        setZurueck_Button(); //Aufruf für die Einstellungen des Zurück-Buttons
 
 
         fenster.add(overlayPanel, BorderLayout.CENTER);//das GridLayout wird im Center platziert
         fenster.add(southPanel, BorderLayout.SOUTH);//das southPanel wird im South-Bereich platziert
 
-        southPanel.add(zurueck_Button);
-        southPanel.add(vor_Button);
+        southPanel.add(zurueck_Button); //Hinzufügen des Buttons
+        southPanel.add(vor_Button); //Hinzufügen des Buttons
 
-        fenster.setVisible(true);
+        fenster.setVisible(true); //Fenster wird sichtbar gesetzt
     }
 
     private void setFenster(){
@@ -56,33 +56,32 @@ public class NavMaze extends JFrame  {
 
     private void setVor_Button(){
 
-        vor_Button.setSize(40,20);
-        zurueck_Button.setSize(40,20);
-
+        vor_Button.setSize(40,20); //Größe des Buttons wird festgesetzt
         vor_Button = new JButton("Vor");
-        vor_Button.addActionListener(e -> {
-            if (counter > 11){
+        vor_Button.addActionListener(e -> { //definiert eine anonyme Funktion, nimmt ein ActionEvent-Objekt e als Eingabe und führt den darauf folgenden Code aus
+            if (counter > 11){ //Es gibt nur 11 Kreise, danach beginnt es von vorne
                 counter = 1;
             }
-            plusAktion(counter);
-            counter++;
+            plusAktion(counter); //Übergibt den Counter an die plusAktion-Methode
+            counter++; //im Anschluss wird der Counter erhöht
         });
     }
     private void setZurueck_Button(){
+        zurueck_Button.setSize(40,20); //Größe des Buttons wird festgesetzt
         zurueck_Button = new JButton("Zurück");
-        zurueck_Button.addActionListener(e -> {
-            if (counter==1){
-                plusAktion(counter);
-                return;
+        zurueck_Button.addActionListener(e -> { //definiert eine anonyme Funktion, nimmt ein ActionEvent-Objekt e als Eingabe und führt den darauf folgenden Code aus
+            if (counter==1){ //Ist der Counter auf 1, so gibt es keinen vorherigen Status
+                plusAktion(counter); //Dadurch wird der Kreis an der ersten Position generiert.
+                return; //verlässt die Methode
             }
-            counter--;
+            counter--; //falls der Counter höher als 1 ist, dann wird dieser um 1 verringert und ruft anschließend wieder die plusAktion-Methode auf
             plusAktion(counter);
         });
     }
 
     public boolean canExit(int i, int j) {
 
-        int n = maze.length;
+        int n = maze.length; // länger der Maze wird in n gespeichert
 
         if (i<0 || j<0 || i >=n || j>=n)
             return false;  // ausserhalb
@@ -104,19 +103,19 @@ public class NavMaze extends JFrame  {
     }
 
     public void printMaze() {
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze.length; j++) {
+        for (int i = 0; i < maze.length; i++) { // Y-Achse der Maze
+            for (int j = 0; j < maze.length; j++) { // X-Achse der Maze
 
                 jpanel = new JPanel();
                 char symbol = maze[i][j];
 
-                if (symbol == '+') {
-                    Point point = new Point(j, (i));
-                    getSolution.add(point);
+                if (symbol == '+') { //hier sollte eigentlich ein Kreis erstellt werden
+                    Point point = new Point(j, (i)); //ein neuer Punkt wird mit diesen Koordinaten erstellt
+                    getSolution.add(point); //der Liste wird dieser Punkt hinzugefügt
                 } if (symbol == ' ') {
-                    jpanel.setBackground(Color.WHITE);
+                    jpanel.setBackground(Color.WHITE); //Weiße Felder werden erstellt
                 } if (symbol == 'X') {
-                    jpanel.setBackground(Color.BLACK);
+                    jpanel.setBackground(Color.BLACK); //Schwarze Felder werden erstellt
                 }
                 panel.add(jpanel);
             }
@@ -124,12 +123,12 @@ public class NavMaze extends JFrame  {
         fenster.setVisible(true);
     }
 
-    private void plusAktion(int counter) {
+    private void plusAktion(int counter) { //Bearbeitung der oberen Schicht für das hinzufügen der Punkte
 
-        panel2.removeAll();
+        panel2.removeAll(); //alles wird von Panel2 entfernt, um den vorherigen Punkt zu entfernen
 
         Map<Integer, Integer> hashMap = new HashMap<>();
-        hashMap.put(1, 0);
+        hashMap.put(1, 0); // Map wird mit den erstellten Punkten/Koordinaten befüllt
         hashMap.put(2, 6);
         hashMap.put(3, 12);
         hashMap.put(4, 13);
@@ -141,17 +140,17 @@ public class NavMaze extends JFrame  {
         hashMap.put(10, 34);
         hashMap.put(11, 35);
 
-        int x = hashMap.getOrDefault(counter, -1);
+        int x = hashMap.getOrDefault(counter, -1); //Counter wird als Key an die Map übergeben und gibt den dazugehörigen Wert zurück - ist dieser nicht vorhanden wird der Wert auf -1 gesetzt.
 
-        for (int i = 0; i < 36; i++) {
+        for (int i = 0; i < 36; i++) { // durch das Panel iterrieren
             JPanel jpanel = new JPanel();
-            if(i == x){
-                jpanel.setLayout(new BorderLayout());
-                jpanel.add(new KreisPanel(), BorderLayout.CENTER);
+            if(i == x){ //sollte das aktuelle i gleich des Wertes sein, der in x aus der Map gespeichert wurde, dann wird der Kreis an dieser Stelle hinzugefügt
+                jpanel.setLayout(new BorderLayout()); //neuer Kreis soll mittig sein, daher Borderlayout
+                jpanel.add(new KreisPanel(), BorderLayout.CENTER); //neuer Kreis wird in der Mitte hinzugefügt
             } else {
-                jpanel.setOpaque(false);
+                jpanel.setOpaque(false); //alle anderen felder werden auf Transparent gesetzt
             }
-            panel2.add(jpanel);
+            panel2.add(jpanel); //hinzufügen des Kreises, oder des transparenten Feldes in die obere Schicht
         }
         fenster.setVisible(true);
     }
@@ -164,10 +163,10 @@ public class NavMaze extends JFrame  {
                         {' ',' ',' ','X',' ','X'},
                         {'X','X',' ',' ',' ',' '}};
 
-        NavMaze mymaze = new NavMaze(maze);
-        mymaze.canExit(0,0);
-        mymaze.printMaze();
-        mymaze.getSolution.forEach(System.out::println);
+        NavMaze mymaze = new NavMaze(maze); //neue Maze
+        mymaze.canExit(0,0); //Erstellung der Maze
+        mymaze.printMaze(); //Labyrinth wird erstellt und die Liste<Point> gefüllt
+        mymaze.getSolution.forEach(System.out::println); //Ausgabe der Liste<Point>
     }
     static class KreisPanel extends JPanel {
         @Override
@@ -176,13 +175,13 @@ public class NavMaze extends JFrame  {
             Graphics2D graphics2D = (Graphics2D) g;
             graphics2D.setColor(Color.blue);
 
-            int durchmesser = Math.min(getWidth(), getHeight());
-            int radius = durchmesser / 2;
-            int centerX = getWidth() / 2 - radius;
-            int centerY = getHeight() / 2 - radius;
+            int durchmesser = Math.min(getWidth(), getHeight()); // Der Durchmesser wird als die kleinere Seitenlänge des Panels festgelegt
+            int radius = durchmesser / 2;   //Radius des Kreises berechnen
+            int centerX = getWidth() / 2 - radius; // Die x-Koordinate des Mittelpunkts des Kreises wird berechnet
+            int centerY = getHeight() / 2 - radius; // Die y-Koordinate des Mittelpunkts des Kreises wird berechnet
 
-            Ellipse2D.Double circle = new Ellipse2D.Double(centerX, centerY ,durchmesser , durchmesser);
-            graphics2D.fill(circle);
+            Ellipse2D.Double circle = new Ellipse2D.Double(centerX, centerY ,durchmesser , durchmesser); // Ein Ellipse2D-Objekt wird erstellt, das den Kreis repräsentiert
+            graphics2D.fill(circle); // Der Kreis wird mit der aktuellen Farbe gefüllt und auf dem JPanel gezeichnet
         }
     }
 }
