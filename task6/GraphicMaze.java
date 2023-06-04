@@ -10,10 +10,10 @@ import java.util.List;
 
 public class GraphicMaze extends JFrame {
 
-    List<Point> getSolution = new ArrayList<>();
+        List<Point> getSolution = new ArrayList<>();
         private char[][] maze;
         JFrame fenster = new JFrame("GrapicMaze");
-      public static JPanel panel = new JPanel(new GridLayout(6, 6, 1, 1));
+        public static JPanel panel = new JPanel(new GridLayout(6, 6, 1, 1));
 
         public GraphicMaze(String title, char[][] maze) {
             fenster.setSize(500, 500);
@@ -26,8 +26,6 @@ public class GraphicMaze extends JFrame {
         }
 
     public static void main(String[] args) {
-
-
 
         char[][] maze =
                         {{' ','X',' ','X',' ',' '},

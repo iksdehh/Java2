@@ -6,20 +6,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NavMaze extends JFrame  {
 
     List<Point> getSolution = new ArrayList<>();
-    private char[][] maze;
+    private final char[][] maze;
+    int counter = 1;
     JFrame fenster = new JFrame("GrapicMaze");
     public static JPanel panel = new JPanel(new GridLayout(6, 6, 1, 1));
-    BorderLayout borderLayout = new BorderLayout(); //norden, osten, süden,westen)
-    JButton zurueck_Button = new JButton( "zurück" );
-
-    JButton vor_Button = new JButton("vor");
+    public static JPanel panel2 = new JPanel(new GridLayout(6, 6, 1, 1));
     public  JPanel jpanel;
-
+    public JButton zurueck_Button = new JButton( "zurück" );
+    public  JButton vor_Button = new JButton("vor");
 
     public NavMaze(String title, char[][] maze) {
 
@@ -28,40 +29,54 @@ public class NavMaze extends JFrame  {
         fenster.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // beendet das Programm beim Schließen des Fensters
         panel.setBackground(Color.BLACK);
 
+        JPanel overlayPanel = new JPanel();
+        overlayPanel.setLayout(new OverlayLayout(overlayPanel));
+        panel2.setOpaque(false);
+        overlayPanel.add(panel);
+        overlayPanel.add(panel2);
+
+
         //Einstellungen der Buttons
         vor_Button.setSize(40,20);
-
         // vor_Button.addActionListener(e -> System.out.println("ich bin der vor button"));
         zurueck_Button.setSize(40,20);
         // zurueck_Button.addActionListener(e -> System.out.println("ich bin der zurück button"));
 
 
-
         vor_Button = new JButton("Vor");
         vor_Button.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                wegVor();
+                if (counter > 11){
+                    counter = 1;
+                }
+                plusAktion(counter);
+                counter++;
             }
         });
         zurueck_Button = new JButton("Zurück");
         zurueck_Button.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                wegZurueck();
+                if (counter==1){
+                    plusAktion(counter);
+                    return;
+                }
+                counter--;
+                plusAktion(counter);
             }
         });
-
-
 
         //JPanel für BorderLayout für den southBereich - FlowChart wird hinzugefügt
         JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,10,10));
 
         //das GridLayout wird im Center platziert und das southPanel im South-Bereich
-        fenster.add(panel, BorderLayout.CENTER);
+        fenster.add(overlayPanel, BorderLayout.CENTER);
         fenster.add(southPanel, BorderLayout.SOUTH);
-        southPanel.add(vor_Button);
         southPanel.add(zurueck_Button);
+        southPanel.add(vor_Button);
 
         fenster.setVisible(true);
         this.maze = maze;
@@ -70,7 +85,7 @@ public class NavMaze extends JFrame  {
     public static void main(String[] args) {
 
         char[][] maze =
-                {{' ','X',' ','X',' ',' '},
+                        {{' ','X',' ','X',' ',' '},
                         {' ','X',' ',' ',' ','X'},
                         {' ',' ','X','X',' ','X'},
                         {'X',' ',' ',' ',' ','X'},
@@ -81,13 +96,11 @@ public class NavMaze extends JFrame  {
 
         mymaze.canExit(0,0);
 
-
         mymaze.printMaze();
 
         mymaze.getSolution.forEach(System.out::println);
 
     }
-
     public boolean canExit(int i, int j) {
 
         int n = maze.length;
@@ -105,7 +118,6 @@ public class NavMaze extends JFrame  {
                 || canExit(i-1,j) /* oben */ || canExit(i,j-1) /* links */
         ) {
             //Weißes Feld mit Kreis
-            System.out.println("("+j+","+i+")");
             maze[i][j] = '+';
             return true;
         }
@@ -116,107 +128,60 @@ public class NavMaze extends JFrame  {
     public void printMaze() {
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze.length; j++) {
+
                 jpanel = new JPanel();
                 char symbol = maze[i][j];
 
                 if (symbol == '+') {
-                    System.out.println("Kreis: " + "("+j+","+i+")");
-                    Point point = new Point(j, (i)); //Erstellt einen neuen Punkt mit den Koordinaten des jeweiligen Punktes.
+                    Point point = new Point(j, (i));
                     getSolution.add(point);
-                }
-
-
-                if (symbol == ' ') {
+                } if (symbol == ' ') {
                     jpanel.setBackground(Color.WHITE);
-                    System.out.println("Weis" + "("+j+","+i+")");
-                }
-                if (symbol == 'X') {
+                } if (symbol == 'X') {
                     jpanel.setBackground(Color.BLACK);
-                    System.out.println("schwarz" + "("+j+","+i+")");
                 }
-
-                System.out.print(maze[i][j] + " ");
-                System.out.println();
                 panel.add(jpanel);
-
             }
         }
-
         fenster.setVisible(true);
-
     }
 
-    private void wegVor() {
-        JPanel glass = new JPanel();
-        glass.setOpaque(false); // sorgt für Transparenz
+    private void plusAktion(int counter) {
 
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze.length; j++){
-                char symbol = maze[i][j];
-                if (symbol == '+'){
-                    if(glass != null){
-                        panel.remove(glass);
-                    }
+        panel2.removeAll();
+        int x= 0;
 
-                    glass.setLayout(new BorderLayout());
-                    glass.add(new KreisPanel(), BorderLayout.CENTER);
-                    jpanel.add(glass);
-                    panel.add(jpanel);
-                    panel.revalidate(); //panel aktualisieren
-                    panel.repaint();    //panel neuzeichenn
+        Map<Integer, Integer> hashMap = new HashMap<>();
+        hashMap.put(1, 0);
+        hashMap.put(2, 6);
+        hashMap.put(3, 12);
+        hashMap.put(4, 13);
+        hashMap.put(5, 19);
+        hashMap.put(6, 25);
+        hashMap.put(7, 26);
+        hashMap.put(8, 32);
+        hashMap.put(9, 33);
+        hashMap.put(10, 34);
+        hashMap.put(11, 35);
 
-                }
-
-
+        if(hashMap.containsKey(counter)) {
+            x = hashMap.get(counter);
         }
 
-    }
 
-
-
-
-
-
-
-       /* for (int y = maze.length-1; y >= 0; y--) { //Y-Achse
-            for (int x = maze.length-1; x >= 0; x--) { //X-Achse
-                char symbol = maze[y][x];
-                if (symbol == '+') {
-
-                }
+        for (int i = 0; i < 36; i++) {
+            JPanel jpanel = new JPanel();
+            if(i == x){
+                jpanel.setLayout(new BorderLayout());
+                jpanel.add(new KreisPanel(), BorderLayout.CENTER);
+                panel2.add(jpanel);
+            } else {
+                jpanel.setOpaque(false);
             }
-
+            panel2.add(jpanel);
         }
-
-        */
+        fenster.setVisible(true);
     }
-
-   /*               jpanel = new JPanel(new BorderLayout());
-                    jpanel.add(new KreisPanel(), BorderLayout.CENTER);
-                    panel.add(jpanel);
-                    panel.revalidate(); //panel aktualisieren
-                    panel.repaint();    //panel neuzeichenn
-
-    */
-
-    private void wegZurueck() {
-        /*
-        if (jpanel != null) {
-            panel.remove(jpanel);
-        }
-        jpanel = new JPanel(new BorderLayout());
-        jpanel.add(new KreisPanel(), BorderLayout.CENTER);
-        panel.add(jpanel);
-        panel.revalidate();
-        panel.repaint();
-
-         */
-
-    }
-
-
-
-
 
     class KreisPanel extends JPanel {
         @Override
