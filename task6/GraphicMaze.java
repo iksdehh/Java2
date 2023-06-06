@@ -78,7 +78,7 @@ public class GraphicMaze extends JFrame {
                         if (symbol == '+') {
                             jpanel.setLayout(new BorderLayout()); //neuer Kreis soll mittig sein, daher Borderlayout
                             jpanel.add(new KreisPanel(), BorderLayout.CENTER); //neuer Kreis wird in der Mitte hinzugefügt
-                            Point point = new Point(j+1, (i+1)*(-1)); //Erstellt einen neuen Punkt mit den Koordinaten des jeweiligen Punktes.
+                            Point point = new Point(j, i); //Erstellt einen neuen Punkt mit den Koordinaten des jeweiligen Punktes.
                             getSolution.add(point); //der Liste wird dieser Punkt hinzugefügt
                         }
                         if (symbol == ' ') {

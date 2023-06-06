@@ -3,15 +3,14 @@ package Java2.task6;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class NavMaze extends JFrame  {
     JFrame fenster = new JFrame("GrapicMaze");
     List<Point> getSolution = new ArrayList<>();
     private final char[][] maze;
+    private char [] maze1D;
     int counter = 1;
     public static JPanel panel = new JPanel(new GridLayout(6, 6, 1, 1));
     public static JPanel panel2 = new JPanel(new GridLayout(6, 6, 1, 1));
@@ -62,7 +61,8 @@ public class NavMaze extends JFrame  {
             if (counter > 11){ //Es gibt nur 11 Kreise, danach beginnt es von vorne
                 counter = 1;
             }
-            plusAktion(counter); //Übergibt den Counter an die plusAktion-Methode
+            plusAktion2(counter);
+           // plusAktion(counter); //Übergibt den Counter an die plusAktion-Methode
             counter++; //im Anschluss wird der Counter erhöht
         });
     }
@@ -70,12 +70,14 @@ public class NavMaze extends JFrame  {
         zurueck_Button.setSize(40,20); //Größe des Buttons wird festgesetzt
         zurueck_Button = new JButton("Zurück");
         zurueck_Button.addActionListener(e -> { //definiert eine anonyme Funktion, nimmt ein ActionEvent-Objekt e als Eingabe und führt den darauf folgenden Code aus
+
             if (counter==1){ //Ist der Counter auf 1, so gibt es keinen vorherigen Status
-                plusAktion(counter); //Dadurch wird der Kreis an der ersten Position generiert.
+                plusAktion2(counter); //Dadurch wird der Kreis an der ersten Position generiert.
                 return; //verlässt die Methode
             }
             counter--; //falls der Counter höher als 1 ist, dann wird dieser um 1 verringert und ruft anschließend wieder die plusAktion-Methode auf
-            plusAktion(counter);
+            //plusAktion(counter);
+            plusAktion2(counter);
         });
     }
 
@@ -110,7 +112,7 @@ public class NavMaze extends JFrame  {
                 char symbol = maze[i][j];
 
                 if (symbol == '+') { //hier sollte eigentlich ein Kreis erstellt werden
-                    Point point = new Point(j, (i)); //ein neuer Punkt wird mit diesen Koordinaten erstellt
+                    Point point = new Point(j, i); //ein neuer Punkt wird mit diesen Koordinaten erstellt
                     getSolution.add(point); //der Liste wird dieser Punkt hinzugefügt
                 } if (symbol == ' ') {
                     jpanel.setBackground(Color.WHITE); //Weiße Felder werden erstellt
@@ -123,9 +125,39 @@ public class NavMaze extends JFrame  {
         fenster.setVisible(true);
     }
 
+    private void plusAktion2(int counter){
+        panel2.removeAll();
+
+        Map<Integer, Character> mapSolution = new HashMap<>();
+        for (int i = 0; i < maze1D.length; i++) {
+            if(maze1D[i] =='+'){
+                mapSolution.put(i, maze1D[i]);
+            }
+        }
+        int x = mapSolution.getOrDefault(counter, 'a');
+
+        //Map umwandeln von "Feld , Symbol(+)" zu "Werte 1 - .., Feld"
+
+        for (int i = 0; i < 36; i++) { // durch das Panel iterrieren
+            JPanel jpanel = new JPanel();
+            if(i == x){ //sollte das aktuelle i gleich des Wertes sein, der in x aus der Map gespeichert wurde, dann wird der Kreis an dieser Stelle hinzugefügt
+                jpanel.setLayout(new BorderLayout()); //neuer Kreis soll mittig sein, daher Borderlayout
+                jpanel.add(new KreisPanel(), BorderLayout.CENTER); //neuer Kreis wird in der Mitte hinzugefügt
+            } else {
+                jpanel.setOpaque(false); //alle anderen felder werden auf Transparent gesetzt
+            }
+            panel2.add(jpanel); //hinzufügen des Kreises, oder des transparenten Feldes in die obere Schicht
+        }
+        fenster.setVisible(true);
+
+    }
+
+
+
     private void plusAktion(int counter) { //Bearbeitung der oberen Schicht für das hinzufügen der Punkte
 
         panel2.removeAll(); //alles wird von Panel2 entfernt, um den vorherigen Punkt zu entfernen
+
 
         Map<Integer, Integer> hashMap = new HashMap<>();
         hashMap.put(1, 0); // Map wird mit den erstellten Punkten/Koordinaten befüllt
@@ -166,7 +198,21 @@ public class NavMaze extends JFrame  {
         NavMaze mymaze = new NavMaze(maze); //neue Maze
         mymaze.canExit(0,0); //Erstellung der Maze
         mymaze.printMaze(); //Labyrinth wird erstellt und die Liste<Point> gefüllt
-        mymaze.getSolution.forEach(System.out::println); //Ausgabe der Liste<Point>
+       // mymaze.getSolution.forEach(System.out::println); //Ausgabe der Liste<Point>
+
+
+        mymaze.maze1D = new char[ mymaze.maze.length * mymaze.maze[1].length];
+
+        int f = 0;
+        for(int i =0 ; i < mymaze.maze.length; i++)
+        {
+            for(int j = 0; j < mymaze.maze[1].length; j++)
+            {
+                mymaze.maze1D[f] = mymaze.maze[i][j];
+                f ++;
+            }
+        }
+
     }
     static class KreisPanel extends JPanel {
         @Override
