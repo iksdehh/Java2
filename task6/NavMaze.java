@@ -128,13 +128,20 @@ public class NavMaze extends JFrame  {
     private void plusAktion2(int counter){
         panel2.removeAll();
 
-        Map<Integer, Character> mapSolution = new HashMap<>();
-        for (int i = 0; i < maze1D.length; i++) {
+        Map<Integer, Character> mapSolution = new TreeMap<>();
+        Map<Integer, Integer> integerMap = new TreeMap<>();
+        for (int i = 0; i < maze1D.length; i++) { //Befüllen mapSolution mit den Feldern als Key und dem Zeichen '+' als Value
             if(maze1D[i] =='+'){
                 mapSolution.put(i, maze1D[i]);
             }
         }
-        int x = mapSolution.getOrDefault(counter, 'a');
+        int count = 1;
+        for (Map.Entry<Integer, Character> entry : mapSolution.entrySet()) {
+            integerMap.put(count, entry.getKey());
+            count++;
+        }
+
+        int x = integerMap.getOrDefault(counter, -1);
 
         //Map umwandeln von "Feld , Symbol(+)" zu "Werte 1 - .., Feld"
 
@@ -188,7 +195,7 @@ public class NavMaze extends JFrame  {
     }
     public static void main(String[] args) {
         char[][] maze =
-                {{' ','X',' ','X',' ',' '},
+                    {{' ','X',' ','X',' ',' '},
                         {' ','X',' ',' ',' ','X'},
                         {' ',' ','X','X',' ','X'},
                         {'X',' ',' ',' ',' ','X'},
