@@ -25,7 +25,7 @@ public class Aufgabe4 extends JFrame {
 
 
         //zwei Buttons erstellen, für die jeweilige Ausgabe
-        JPanel centerPanel = new JPanel(new FlowLayout());
+        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton vNameButton = new JButton("Vorname");
 
         JButton nameButton = new JButton("Nachname");
