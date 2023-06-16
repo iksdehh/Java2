@@ -1,6 +1,6 @@
 package Java2.KlausurVorbereitung;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 // Nach Aufruf der Methode enthält die als Parameter übergebene Liste nur unterschiedliche, nicht gleiche Objekte. Die Reihenfolge darf nicht verändert werden.
 public class Aufgabe10 {
     public static void main(String[] args) {
-        List list = Arrays.asList("Hallo", "Hallo", "wie", "gehts?");
+        List<String> list = Arrays.asList("Hallo", "Hallo", "wie", "gehts?");
         delCopies(list);
     }
     public static void delCopies(List<String> l){
-        l.stream().distinct().collect(Collectors.toList()).forEach(System.out::println);
+        l.stream().distinct().toList().forEach(System.out::println);
     }
 }
