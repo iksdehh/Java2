@@ -1,4 +1,4 @@
-package Java2.task5Test;
+package task5Test;
 
 
 import java.io.*;

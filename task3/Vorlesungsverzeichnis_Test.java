@@ -1,4 +1,4 @@
-package Java2.task3;
+package task3;
 
 import static org.junit.Assert.*;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.*;
-import Java2.task3.Vorlesung;
+import task3.Vorlesung;
 
 
 public class Vorlesungsverzeichnis_Test {

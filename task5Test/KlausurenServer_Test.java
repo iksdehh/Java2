@@ -1,4 +1,4 @@
-package Java2.task5Test;
+package task5Test;
 
 import org.junit.Before;
 import org.junit.Test;

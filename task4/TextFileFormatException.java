@@ -1,4 +1,4 @@
-package Java2.task4;
+package task4;
 
 public class TextFileFormatException extends RuntimeException
 {

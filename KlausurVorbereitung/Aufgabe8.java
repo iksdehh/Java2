@@ -1,6 +1,8 @@
-package Java2.KlausurVorbereitung;
+package KlausurVorbereitung;
 
-import Java2.task4.TextFileFormatException;
+
+
+import task4.TextFileFormatException;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

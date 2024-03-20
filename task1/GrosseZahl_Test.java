@@ -1,4 +1,4 @@
-package Java2.task1;
+package task1;
 
 import static org.junit.Assert.*;
 

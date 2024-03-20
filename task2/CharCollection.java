@@ -1,4 +1,4 @@
-package Java2.task2;
+package task2;
 
 import java.util.*;
 
